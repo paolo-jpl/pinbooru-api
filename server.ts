@@ -11,15 +11,25 @@ const pool = new Pool({
   port: parseInt(process.env.DBPORT as string),
 });
 
+import { tagsRouter } from './routes/tags';
+
 const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+
 app.get("/", (req, res) => {
   res.send("welcome");
 });
+
+app.use("/tags", tagsRouter);
 
 app.listen(PORT, () => console.log(`Express app - listening on port ${PORT}!`));
 
