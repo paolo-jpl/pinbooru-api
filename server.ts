@@ -12,6 +12,8 @@ const pool = new Pool({
 });
 
 import { tagsRouter } from './routes/tags';
+import { imageRouter } from './routes/image';
+import { userRouter } from './routes/user';
 
 const app = express();
 const PORT = process.env.PORT;
@@ -29,6 +31,8 @@ app.get("/", (req, res) => {
   res.send("welcome");
 });
 
+app.use("/user", userRouter);
+app.use("/image", imageRouter);
 app.use("/tags", tagsRouter);
 
 app.listen(PORT, () => console.log(`Express app - listening on port ${PORT}!`));
