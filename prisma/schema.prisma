@@ -23,14 +23,16 @@ model User {
 }
 
 model Image {
-  id         String       @id @default(uuid())
-  imgURL     String
-  source     String?
-  published  Boolean      @default(false)
-  uploaderId String?
-  uploader   User?        @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
-  Collection Collection[]
-  ImageTag   ImageTag[]
+  id          String       @id @default(uuid())
+  imgURL      String
+  description String?      @default("")
+  source      String?
+  published   Boolean      @default(false)
+  uploadedAt  DateTime     @default(now())
+  uploaderId  String?
+  uploader    User?        @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  Collection  Collection[]
+  ImageTag    ImageTag[]
 }
 
 model Collection {
