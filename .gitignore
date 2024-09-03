@@ -1,7 +1,5 @@
 # Prisma
 prisma/migrations
-prisma/seed.ts
-prisma/seed_data.ts
 
 # Logs
 logs
