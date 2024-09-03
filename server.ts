@@ -13,6 +13,9 @@ const pool = new Pool({
 });
 
 const PORT = process.env.PORT;
-app.listen(PORT, () => console.log(`Express app - listening on port ${PORT}!`));
+
+if (process.env.NODE_ENV !== 'test') { //prevent port collision on tests
+  app.listen(PORT, () => console.log(`Express - Listening on port ${PORT}!`));
+}
 
 export { pool }

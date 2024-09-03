@@ -1,5 +1,7 @@
 ## Pinbooru-API
-REST API for Pinbooru client applications
+REST API for Pinbooru client applications.
+
+Test cases are modeled after the db seed.
 
 Run commands:
 ```console
@@ -14,4 +16,7 @@ npx prisma db seed
 
 //Reset + Seed DB
 npx prisma migrate reset
+
+//Run tests
+npm test
 ```
