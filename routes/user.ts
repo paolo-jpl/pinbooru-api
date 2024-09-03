@@ -1,4 +1,4 @@
-import { pool } from "../server";
+import * as userController from '../controller/user'
 import { Router } from 'express';
 
 export const userRouter = Router();

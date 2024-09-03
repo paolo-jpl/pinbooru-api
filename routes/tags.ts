@@ -1,15 +1,10 @@
-import { pool } from "../server";
+import * as tagController from '../controller/tags'
 import { Router } from 'express';
 
 export const tagsRouter = Router();
 
 tagsRouter.get('/', async (req, res) => {
-  pool.query('SELECT * FROM "Tag"' , (error, results) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).json(results.rows);
-  })
+  res.end();
 });
 
 tagsRouter.get('/:id', async (req, res) => {
