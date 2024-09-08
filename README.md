@@ -3,6 +3,9 @@ REST API for Pinbooru client applications.
 
 Test cases are modeled after the db seed.
 
+Docker postgres:
+```docker run --name postgres_container -e POSTGRES_PASSWORD=qwert -d -p 6500:5432 -v postgres_data:/var/lib/postgresql/data postgres```
+
 Run commands:
 ```console
 //Run Server
