@@ -19,14 +19,17 @@ export async function getImageById(id: string){
 
 export async function createImage(
   imgURL: string, 
-  uploaderId: string, 
-  description?: string, 
-  source?: string, 
-  published?: boolean,
-  id?: string,
+  uploaderId: string,
+  options:{
+    description?: string, 
+    source?: string, 
+    published?: boolean,
+    id?: string,
+  } 
 ){
+  let { id, description, source, published } = options;
+  
   if(!id){ id = nanoid() }
-
   const values = nullToDefault([description, source, published]);
 
   const res = await pool.query(

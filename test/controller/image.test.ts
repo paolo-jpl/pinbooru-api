@@ -39,7 +39,7 @@ describe('get image by id', () => {
 describe('create image', () => {
   describe('given all image details', () => {
     it('should return object with matching details', async () => {
-      const data = await imageController.createImage("...", "one","desc", "....", true, "111")
+      const data = await imageController.createImage("...", "one", {description: "desc", source: "....", published: true, id: "111"})
       expect(data[0].id).toBe("111")
       expect(data[0].uploaderId).toBe("one")
       expect(data[0].description).toBe("desc")
@@ -49,9 +49,18 @@ describe('create image', () => {
 
   describe('given no optional details', () => {
     it('should return object with default values', async () => {
-      const data = await imageController.createImage("...", "one")
+      const data = await imageController.createImage("...", "one", {})
       expect(data[0].uploaderId).toBe("one")
       expect(data[0].description).toBe("")
+      expect(data[0].published).toBe(false)
+    })
+  })
+
+  describe('given some optional details', () => {
+    it('should return with some default values', async () => {
+      const data = await imageController.createImage("...", "one", {description: "desc"})
+      expect(data[0].uploaderId).toBe("one")
+      expect(data[0].description).toBe("desc")
       expect(data[0].published).toBe(false)
     })
   })
@@ -59,7 +68,7 @@ describe('create image', () => {
   describe('given uploaderId of user that does not exist', () => {
     it('should throw FKey restraint error (23503)', async () => {
       try{
-        await imageController.createImage("llorem", "random")
+        await imageController.createImage("llorem", "random", {})
       } catch (e) {
         expect(e).toMatchObject({code: "23503"});
       }
