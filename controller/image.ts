@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { pool } from "../server";
-import { nullToDefault } from "../util/query";
+import { nullToDefault, setUpdateColumn } from "../util/query";
 
 export async function getAllImages(){
   const res = await pool.query('SELECT * FROM "Image"');
@@ -38,4 +38,27 @@ export async function createImage(
      RETURNING *`, 
     [id, imgURL, uploaderId]);
   return res.rows
+}
+
+export async function updateImage(
+  id: string,
+  data: {
+    imgURL?: string, 
+    uploaderId?: string, 
+    description?: string, 
+    source?: string, 
+    published?: boolean,
+  }
+){
+  const query = setUpdateColumn(
+    [data.imgURL, data.uploaderId, data.description, data.source, data.published], 
+    ["imgURL", "uploaderId", "description", "source", "published"])
+
+  const res = await pool.query(`
+    UPDATE "Image"
+    SET ${query}
+    WHERE "id" = $1
+    RETURNING *`,
+    [id])
+  return res.rows;
 }
