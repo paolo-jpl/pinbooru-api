@@ -55,6 +55,16 @@ describe('create image', () => {
       expect(data[0].published).toBe(false)
     })
   })
+
+  describe('given uploaderId of user that does not exist', () => {
+    it('should throw FKey restraint error (23503)', async () => {
+      try{
+        await imageController.createImage("llorem", "random")
+      } catch (e) {
+        expect(e).toMatchObject({code: "23503"});
+      }
+    })
+  })
 })
 
 afterAll(async () => {
