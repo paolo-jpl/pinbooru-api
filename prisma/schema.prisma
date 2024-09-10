@@ -47,9 +47,9 @@ model ImageTag {
 
 model Tag {
   id         Int         @id @default(autoincrement())
-  name       String
+  name       String      @unique
   category   TagCategory @relation(fields: [categoryId], references: [id])
-  categoryId Int
+  categoryId Int         @default(1)
   ImageTag   ImageTag[]
 }
 
