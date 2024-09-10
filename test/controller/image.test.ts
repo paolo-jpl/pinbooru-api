@@ -10,6 +10,7 @@ afterEach(async () => {
   await pool.query('ROLLBACK')
 });
 
+// READ
 describe('get all images', () => {
   it('should return an array of length 15 (all rows)', async () => {
     const data = await imageController.getAllImages()
@@ -36,6 +37,7 @@ describe('get image by id', () => {
   })
 })
 
+// CREATE
 describe('create image', () => {
   describe('given all image details', () => {
     it('should return object with matching details', async () => {
@@ -74,6 +76,44 @@ describe('create image', () => {
       }
     })
   })
+})
+
+// UPDATE
+describe('update image', () => {
+  describe('given changes to all columns', () => {
+    it('should be updated with all new changes', async () => {
+      expect(true).toBe(true);
+    })
+  })
+  describe('given new url', () => {
+    it('should be updated with new url', async () => {
+      const data = await imageController.updateImage("three", {imgURL: "new.url"})
+      expect(data[0].imgURL).toBe("new.url");
+      expect(data[0].published).toBe(true);
+    })
+  })
+  describe('given new source and publish status', () => {
+    it('should be updated with new source and status', async () => {
+      const data = await imageController.updateImage("three", {source: "news", published: false})
+      expect(data[0].source).toBe("news");
+      expect(data[0].published).toBe(false);
+      expect(data[0].uploaderId).toBe("one");
+    })
+  })
+  describe('given new uploaderId of user that does not exist', () => {
+    it('should throw FKey restraint error (23503)', async () => {
+      try{
+        await imageController.updateImage("seven", {uploaderId: "admin"})
+      } catch (e) {
+        expect(e).toMatchObject({code: "23503"});
+      }
+    })
+  })
+})
+
+//DELETE
+describe('delete image', () => {
+
 })
 
 afterAll(async () => {

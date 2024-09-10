@@ -10,6 +10,7 @@ afterEach(async () => {
   await pool.query('ROLLBACK')
 });
 
+// READ
 describe('get all tags', () => {
   it('should return an array of length 13 (all rows)', async () => {
     const data = await tagController.getAllTags()
@@ -36,6 +37,7 @@ describe('get tag by name', () => {
   })
 })
 
+// CREATE
 //ASSUMPTION: Can not force assign tag id (autoincrement)
 describe('create tag', () => {
   describe('given all tag details', () => {
@@ -61,6 +63,30 @@ describe('create tag', () => {
       }
     })
   })
+})
+
+// UPDATE
+describe('update tag', () => {
+  describe('given new categoryId', () => {
+    it('should return updated with new changes', async () => {
+      const data = await tagController.updateTag("anatomy", 2);
+      expect(data[0].categoryId).toBe(2)
+    })
+  })
+  describe('given new categoryId that does not exist', () => {
+    it('should throw FKey restraint error (23503)', async () => {
+      try{
+        await tagController.updateTag("anatomy", 4)
+      } catch (e) {
+        expect(e).toMatchObject({code: "23503"});
+      }
+    })
+  })
+})
+
+//DELETE
+describe('delete tag', () => {
+
 })
 
 afterAll(async () => {
