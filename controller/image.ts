@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import { pool } from "../server";
+import { nullToDefault } from "../util/query";
 
 export async function getAllImages(){
   const res = await pool.query('SELECT * FROM "Image"');
@@ -16,7 +17,6 @@ export async function getImageById(id: string){
   return res.rows
 }
 
-//KNOWN ISSUE: error if string has unescaped ('), requires sanitization
 export async function createImage(
   imgURL: string, 
   uploaderId: string, 
@@ -27,16 +27,7 @@ export async function createImage(
 ){
   if(!id){ id = nanoid() }
 
-  //TODO: turn into function?
-  const values = [description, source, published].map((property) => {
-    if(!property) { 
-      return "DEFAULT"
-    } else if (typeof property === "string"){
-      return `'${property}'`;
-    } else {
-      return property;
-    };
-  });
+  const values = nullToDefault([description, source, published]);
 
   const res = await pool.query(
     `INSERT into "Image" ("id", "imgURL", "uploaderId", "description", "source", "published")
