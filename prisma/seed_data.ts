@@ -214,81 +214,68 @@ export const imageTags = [
 export const categories = [
   {
     id: 1,
-    name: "Content"
+    name: "content"
   },
   {
     id: 2,
-    name: "Meta"
+    name: "meta"
   },
   {
     id: 3,
-    name: "Artist"
+    name: "artist"
   },
 ]
 
 export const tags = [
   {
-    id: 1,
     name: "dynamic_pose",
     categoryId: 1
   },
   {
-    id: 2,
     name: "clothing",
     categoryId: 1
   },
   {
-    id: 3,
     name: "mech",
     categoryId: 1
   },
   {
-    id: 4,
     name: "anatomy",
     categoryId: 1
   },
   {
-    id: 5,
     name: "rendering",
     categoryId: 1
   },
   {
-    id: 11,
     name: "cartoonish",
     categoryId: 1
   },
   {
-    id: 12,
-    name: "tag2",
+    name: "beach",
     categoryId: 1
   },
   {
-    id: 13,
-    name: "tag3",
+    name: "fantasy",
     categoryId: 1
   },
   {
-    id: 6,
     name: "fanart",
     categoryId: 2
   },
   {
-    id: 7,
     name: "photograph",
     categoryId: 2
   },
   {
-    id: 8,
     name: "original_character",
     categoryId: 2
   },
   {
-    id: 9,
     name: "Goblin_Pri",
     categoryId: 3
   },
   {
-    id: 10,
     name: "sheruff1010",
     categoryId: 3
   },
