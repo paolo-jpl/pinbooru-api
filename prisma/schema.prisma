@@ -31,24 +31,24 @@ model Image {
 
 model Collection {
   id      String @id @default(uuid())
-  image   Image  @relation(fields: [imageId], references: [id])
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
   imageId String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
 }
 
 model ImageTag {
   id      Int    @id @default(autoincrement())
-  image   Image  @relation(fields: [imageId], references: [id])
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
   imageId String
-  tag     Tag    @relation(fields: [tagId], references: [id])
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
   tagId   Int
 }
 
 model Tag {
   id         Int         @id @default(autoincrement())
   name       String      @unique
-  category   TagCategory @relation(fields: [categoryId], references: [id])
+  category   TagCategory @relation(fields: [categoryId], references: [id], onDelete: SetDefault)
   categoryId Int         @default(1)
   ImageTag   ImageTag[]
 }
