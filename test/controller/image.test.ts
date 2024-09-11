@@ -113,7 +113,21 @@ describe('update image', () => {
 
 //DELETE
 describe('delete image', () => {
+  describe('given image id "ten"', () => {
+    it('should have image "ten" removed from list of images', async () => {
+      let data = await imageController.deleteImage("ten");
+      expect(data[0].id).toBe("ten")
 
+      data = await imageController.getImageById("ten");
+      expect(data.length).toBe(0);
+    })
+  })
+  describe('given image that does not exist', () => {
+    it('should return empty query result', async () => {
+      const data = await imageController.deleteImage("random");
+      expect(data.length).toBe(0);
+    })
+  })
 })
 
 afterAll(async () => {

@@ -37,3 +37,12 @@ export async function updateTag( name: string, categoryId: number ){
     [categoryId, name])
   return res.rows;
 }
+
+export async function deleteTag(name: string) {
+  const res = await pool.query(`
+    DELETE FROM "Tag"
+    WHERE "name" = $1
+    RETURNING *`,
+    [name]);
+  return res.rows
+}

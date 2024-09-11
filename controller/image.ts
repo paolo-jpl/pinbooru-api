@@ -62,3 +62,12 @@ export async function updateImage(
     [id])
   return res.rows;
 }
+
+export async function deleteImage(id: string) {
+  const res = await pool.query(`
+    DELETE FROM "Image"
+    WHERE "id" = $1
+    RETURNING *`,
+    [id]);
+  return res.rows
+}

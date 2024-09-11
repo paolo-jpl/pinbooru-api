@@ -86,7 +86,22 @@ describe('update tag', () => {
 
 //DELETE
 describe('delete tag', () => {
+  describe('given tag "mech"', () => {
+    it('should have tag "mech" removed from list of tags', async () => {
+      let data = await tagController.deleteTag("mech");
+      expect(data[0].name).toBe("mech")
+      expect(data[0].categoryId).toBe(1)
 
+      data = await tagController.getTagByName("mech");
+      expect(data.length).toBe(0);
+    })
+  })
+  describe('given tag that does not exist', () => {
+    it('should return empty query result', async () => {
+      const data = await tagController.deleteTag("random");
+      expect(data.length).toBe(0);
+    })
+  })
 })
 
 afterAll(async () => {
