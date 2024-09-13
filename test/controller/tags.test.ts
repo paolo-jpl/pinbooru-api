@@ -11,7 +11,7 @@ afterEach(async () => {
 });
 
 // READ
-describe.only('get all tags by id', () => {
+describe('get all tags by id', () => {
   describe('given no limit or offset', () => {
     it('should return an array of length 13 (all rows)', async () => {
       const data = await tagController.getAllTags()
@@ -25,7 +25,7 @@ describe.only('get all tags by id', () => {
       const data = await tagController.getAllTags(3, 2)
       expect(data.length).toBe(3)
 
-      let id_array = data.map(({ id }) => id)
+      let id_array = data.map((row: any) => row.id)
       expect(id_array).toEqual([4,5,6]);
     })
   })

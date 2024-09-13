@@ -80,11 +80,6 @@ describe('create image', () => {
 
 // UPDATE
 describe('update image', () => {
-  describe('given changes to all columns', () => {
-    it('should be updated with all new changes', async () => {
-      expect(true).toBe(true);
-    })
-  })
   describe('given new url', () => {
     it('should be updated with new url', async () => {
       const data = await imageController.updateImage("three", {imgURL: "new.url"})
