@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { pool } from "../server";
-import { nullToDefault } from "../util/query";
+import { nullToDefault, paginate } from "../util/query";
 
 export async function getAllTags(limit?: number, offset?: number){
   let sql = `
@@ -8,10 +8,11 @@ export async function getAllTags(limit?: number, offset?: number){
     FROM "Tag"
     ORDER BY "id"`
 
-  if(limit != null && offset != null){
-    sql = sql + `LIMIT ${limit} OFFSET ${offset}`
+  if(limit != null){
+    sql = sql + paginate(limit, offset)
   }
 
+  console.log(sql)
   const res = await pool.query(sql);
   return res.rows
 }

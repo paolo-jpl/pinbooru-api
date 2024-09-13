@@ -25,3 +25,11 @@ export function setUpdateColumn(values: any[], colnames: string[]){
   }).filter((value) => value != "").join(',');
   return query;
 }
+
+export function paginate(limit: number, offset?: number){
+  let sql = `LIMIT ${limit} `
+  if(offset != null){ 
+    sql = sql + `OFFSET ${offset}`
+  }
+  return sql;
+}
