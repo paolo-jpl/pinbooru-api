@@ -4,7 +4,7 @@ export function setInsertColumns(values: any[], colnames: string[]){
   let inputs: any[] = []
 
   values.forEach((value, index) => {
-    if(value != null) {
+    if(value != null && !Number.isNaN(value)) {
       inputs.push(value)
       columns.push(colnames[index])
     }
@@ -14,7 +14,7 @@ export function setInsertColumns(values: any[], colnames: string[]){
 
 export function setUpdateColumns(values: any[], colnames: string[]){
   const query = values.map((value, index) => {
-    if(value == null) 
+    if(value == null || Number.isNaN(value)) 
       return ""
     else
       return format(`%I = %L`, colnames[index], value)
