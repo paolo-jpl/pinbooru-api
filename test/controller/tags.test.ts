@@ -11,12 +11,23 @@ afterEach(async () => {
 });
 
 // READ
-describe('get all tags', () => {
-  it('should return an array of length 13 (all rows)', async () => {
-    const data = await tagController.getAllTags()
-    expect(data.length).toBe(13)
-    expect(data[1].name).toBe("clothing")
-    expect(data[10].name).toBe("original_character")
+describe.only('get all tags by id', () => {
+  describe('given no limit or offset', () => {
+    it('should return an array of length 13 (all rows)', async () => {
+      const data = await tagController.getAllTags()
+      expect(data.length).toBe(13)
+      expect(data[1].name).toBe("clothing")
+      expect(data[10].name).toBe("original_character")
+    })
+  })
+  describe('given limit 3 and offset 6', () => {
+    it('should return tags of id 7 to 9', async () => {
+      const data = await tagController.getAllTags(3, 6)
+      expect(data.length).toBe(3)
+
+      let id_array = data.map(({ id }) => id)
+      expect(id_array).toEqual([7,8,9]);
+    })
   })
 });
 

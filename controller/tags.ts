@@ -2,8 +2,17 @@ import { nanoid } from "nanoid";
 import { pool } from "../server";
 import { nullToDefault } from "../util/query";
 
-export async function getAllTags(){
-  const res = await pool.query('SELECT * FROM "Tag"');
+export async function getAllTags(limit?: number, offset?: number){
+  let sql = `
+    SELECT * 
+    FROM "Tag"
+    ORDER BY "id"`
+
+  if(limit != null && offset != null){
+    sql = sql + `LIMIT ${limit} OFFSET ${offset}`
+  }
+
+  const res = await pool.query(sql);
   return res.rows
 }
 
