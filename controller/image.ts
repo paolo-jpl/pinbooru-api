@@ -1,18 +1,17 @@
 import { nanoid } from "nanoid";
 import { pool } from "../server";
-import { nullToDefault, paginate, setUpdateColumn } from "../util/query";
+import { setInsertColumns, setUpdateColumns } from "../util/query";
+const format = require('pg-format');
 
-export async function getAllImages(limit?: number, page?: number){
-  let sql = `
+export async function getAllImages(limit: number | string = `ALL`, page: number = 0){
+  if(typeof limit === "number") {page = (page - 1) * limit}
+  const res = await pool.query(`
     SELECT * 
     FROM "Image"
-    ORDER BY "createdAt"`
+    ORDER BY "uploadedAt"
+    LIMIT ${limit} OFFSET $1`,
+    [page]);
 
-  if(limit != null){
-    sql = sql + paginate(limit, page)
-  }
-
-  const res = await pool.query(sql);
   return res.rows
 }
 
@@ -39,14 +38,18 @@ export async function createImage(
   let { id, description, source, published } = options;
   
   if(!id){ id = nanoid() }
-  const values = nullToDefault([description, source, published]);
+  const { columns, inputs } = setInsertColumns(
+    [id, imgURL, uploaderId, description, source, published],
+    ['id', 'imgURL', 'uploaderId', 'description', 'source', 'published'])
 
-  const res = await pool.query(
-    `INSERT into "Image" ("id", "imgURL", "uploaderId", "description", "source", "published")
-     VALUES ($1, $2, $3, ${values[0]}, ${values[1]}, ${values[2]})
-     RETURNING *`, 
-    [id, imgURL, uploaderId]);
-  return res.rows
+  const sql = format(`
+    INSERT into "Image" (%I)
+    VALUES (%L)
+    RETURNING *`,
+    columns, inputs)
+
+  const res = await pool.query(sql)
+  return res.rows;
 }
 
 export async function updateImage(
@@ -59,16 +62,18 @@ export async function updateImage(
     published?: boolean,
   }
 ){
-  const query = setUpdateColumn(
+  const query = setUpdateColumns(
     [data.imgURL, data.uploaderId, data.description, data.source, data.published], 
-    ["imgURL", "uploaderId", "description", "source", "published"])
+    ['imgURL', 'uploaderId', 'description', 'source', 'published'])
 
-  const res = await pool.query(`
+  const sql = format(`
     UPDATE "Image"
-    SET ${query}
-    WHERE "id" = $1
+    SET %s
+    WHERE "id" = %L
     RETURNING *`,
-    [id])
+    query, id)
+
+  const res = await pool.query(sql)
   return res.rows;
 }
 

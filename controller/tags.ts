@@ -1,18 +1,16 @@
-import { nanoid } from "nanoid";
 import { pool } from "../server";
-import { nullToDefault, paginate } from "../util/query";
+import { setInsertColumns } from "../util/query";
+const format = require('pg-format');
 
-export async function getAllTags(limit?: number, page?: number){
-  let sql = `
+export async function getAllTags(limit: number | string = `ALL`, page: number = 0){
+  if(typeof limit === "number") {page = (page - 1) * limit}
+  const res = await pool.query(`
     SELECT * 
     FROM "Tag"
-    ORDER BY "id"`
+    ORDER BY "id"
+    LIMIT ${limit} OFFSET $1`,
+    [page]);
 
-  if(limit != null){
-    sql = sql + paginate(limit, page)
-  }
-
-  const res = await pool.query(sql);
   return res.rows
 }
 
@@ -27,13 +25,15 @@ export async function getTagByName(name: string){
 }
 
 export async function createTag(name: string, categoryId?: number){
-  const values = nullToDefault([categoryId])
+  const { columns, inputs } = setInsertColumns([name, categoryId], ['name', 'categoryId'])
 
-  const res = await pool.query(`
-    INSERT into "Tag" ("name", "categoryId")
-    VALUES ($1, ${values[0]})
-    RETURNING *`, 
-    [name])
+  const sql = format(`
+    INSERT into "Tag" (%I)
+    VALUES (%L)
+    RETURNING *`,
+    columns, inputs)
+
+  const res = await pool.query(sql)
   return res.rows;
 }
 
