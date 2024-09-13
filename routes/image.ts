@@ -1,38 +1,34 @@
 import * as imageController from '../controller/image'
 import { Router } from 'express';
+import type { Request, Response } from 'express';
 
 export const imageRouter = Router();
+
 //TODO: Route for published only images
-imageRouter.get('/', async (req, res) => {
-  try{
-    const data = await imageController.getAllImages();
-    res.json(data);
-  } catch (err) {
+imageRouter.get('/', async (req: Request, res: Response) => {
+  const limit:any = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+  const page:any = req.query.page ? parseInt(req.query.page as string) : undefined;
 
-  }
+  const data = await imageController.getAllImages(undefined, limit, page);
+  res.json(data);
 });
 
-imageRouter.get('/imageUrl', async (req, res) => {
-  res.end();
+imageRouter.get('/url', async (req: Request, res: Response) => {
+  const limit:any = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+  const page:any = req.query.page ? parseInt(req.query.page as string) : undefined;
+
+  const data = await imageController.getAllImages(["id", "imgURL"], limit, page);
+  res.json(data);
 });
 
-imageRouter.get('/:id', async (req, res) => {
-  const id = req.params.id;
-  try{
-    const data = await imageController.getImageById(id);
-    res.json(data);
-  } catch (err) {
-
-  }
+imageRouter.get('/:id', async (req: Request, res: Response) => {
+  const data = await imageController.getImageById(req.params.id);
+  res.json(data);
 });
 
-imageRouter.get('/imageUrl/:id', async (req, res) => {
-  res.end();
-});
-
-//get tags given image
 imageRouter.get('/:id/tags', async (req, res) => {
-  res.end();
+  const data = await imageController.getImageTags(req.params.id);
+  res.json(data);
 });
 
 imageRouter.post('/', async (req, res) => {
