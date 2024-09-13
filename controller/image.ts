@@ -37,19 +37,14 @@ export async function getImageById(id: string){
   return res.rows
 }
 
-export async function getImageTags(limit: number | string = `ALL`, page: number = 0){
-  if(typeof limit === "number" && page > 0) 
-    page = (page - 1) * limit
-  else page = 0;
-  
-  const sql = format(`
-    SELECT * 
-    FROM "Image"
-    ORDER BY "uploadedAt"
-    LIMIT %s OFFSET %L`, 
-    limit, page);
-
-  const res = await pool.query(sql);
+export async function getImageTags(id: string){
+  const res = await pool.query(`
+    SELECT  "Tag".name, "TagCategory".name AS "category"
+    FROM    "ImageTag"
+    JOIN    "Tag" ON "Tag".id = "ImageTag"."tagId"
+    JOIN    "TagCategory" ON "TagCategory".id = "Tag"."categoryId" 
+    WHERE   "imageId" = $1`,
+    [id]);
   return res.rows
 }
 
