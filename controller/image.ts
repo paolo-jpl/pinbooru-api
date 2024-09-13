@@ -3,17 +3,25 @@ import { pool } from "../server";
 import { setInsertColumns, setUpdateColumns } from "../util/query";
 const format = require('pg-format');
 
-export async function getAllImages(limit: number | string = `ALL`, page: number = 0){
+export async function getAllImages(columns?: string[] | string, limit: number | string = `ALL`, page: number = 0){
   if(typeof limit === "number" && page > 0) 
     page = (page - 1) * limit
   else page = 0;
-  
-  const sql = format(`
-    SELECT * 
-    FROM "Image"
-    ORDER BY "uploadedAt"
-    LIMIT %s OFFSET %L`, 
-    limit, page);
+
+  let sql 
+  if(columns){
+    sql = format(`
+      SELECT %I FROM "Image"
+      ORDER BY "uploadedAt"
+      LIMIT %s OFFSET %L`, 
+      columns, limit, page);
+  } else {
+    sql = format(`
+      SELECT * FROM "Image"
+      ORDER BY "uploadedAt"
+      LIMIT %s OFFSET %L`, 
+      limit, page);
+  }
 
   const res = await pool.query(sql);
   return res.rows
@@ -26,6 +34,22 @@ export async function getImageById(id: string){
      JOIN   "User" ON "User".id = "Image"."uploaderId"
      WHERE  "Image".id = $1`, 
     [id]);
+  return res.rows
+}
+
+export async function getImageTags(limit: number | string = `ALL`, page: number = 0){
+  if(typeof limit === "number" && page > 0) 
+    page = (page - 1) * limit
+  else page = 0;
+  
+  const sql = format(`
+    SELECT * 
+    FROM "Image"
+    ORDER BY "uploadedAt"
+    LIMIT %s OFFSET %L`, 
+    limit, page);
+
+  const res = await pool.query(sql);
   return res.rows
 }
 
