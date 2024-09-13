@@ -26,10 +26,10 @@ export function setUpdateColumn(values: any[], colnames: string[]){
   return query;
 }
 
-export function paginate(limit: number, offset?: number){
+export function paginate(limit: number, page?: number){
   let sql = `LIMIT ${limit} `
-  if(offset != null){ 
-    sql = sql + `OFFSET ${offset}`
+  if(page != null){ 
+    sql = sql + `OFFSET ${limit * (page - 1)}`
   }
   return sql;
 }

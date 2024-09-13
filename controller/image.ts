@@ -2,14 +2,14 @@ import { nanoid } from "nanoid";
 import { pool } from "../server";
 import { nullToDefault, paginate, setUpdateColumn } from "../util/query";
 
-export async function getAllImages(limit?: number, offset?: number){
+export async function getAllImages(limit?: number, page?: number){
   let sql = `
     SELECT * 
     FROM "Image"
     ORDER BY "createdAt"`
 
   if(limit != null){
-    sql = sql + paginate(limit, offset)
+    sql = sql + paginate(limit, page)
   }
 
   const res = await pool.query(sql);

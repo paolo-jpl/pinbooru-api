@@ -20,13 +20,13 @@ describe.only('get all tags by id', () => {
       expect(data[10].name).toBe("original_character")
     })
   })
-  describe('given limit 3 and offset 6', () => {
-    it('should return tags of id 7 to 9', async () => {
-      const data = await tagController.getAllTags(3, 6)
+  describe('given limit 3 and page 2', () => {
+    it('should return tags of id 4 to 6', async () => {
+      const data = await tagController.getAllTags(3, 2)
       expect(data.length).toBe(3)
 
       let id_array = data.map(({ id }) => id)
-      expect(id_array).toEqual([7,8,9]);
+      expect(id_array).toEqual([4,5,6]);
     })
   })
 });
