@@ -1,18 +1,25 @@
 import { pool } from "../server";
-import { setInsertColumns } from "../util/query";
+import { setInsertColumns, setWhere } from "../util/query";
 const format = require('pg-format');
 
-export async function getAllTags(limit: number | string = `ALL`, page: number = 0){
-  if(typeof limit === "number" && page > 0) 
+export async function getAllTags(limit: number | string = `ALL`, page: number = 0, category?: string, name?: string){
+  if(typeof limit === "number" && page > 0)
     page = (page - 1) * limit
   else page = 0;
 
+  const conditions = setWhere([category, name], ['category', 'name'])
+
   const sql = format(`
-    SELECT * 
-    FROM "Tag"
-    ORDER BY "id"
+    WITH tags as (
+      SELECT "Tag".id, "Tag".name, "TagCategory".name AS "category"
+      FROM   "Tag"
+      JOIN   "TagCategory" ON "TagCategory".id = "Tag"."categoryId"
+    )
+    SELECT * FROM tags
+    WHERE TRUE %s
+    ORDER BY id
     LIMIT %s OFFSET %L`, 
-    limit, page);
+    conditions, limit, page);
 
   const res = await pool.query(sql);
   return res.rows
@@ -23,8 +30,19 @@ export async function getTagByName(name: string){
     `SELECT "Tag".id, "Tag"."name", "TagCategory"."name" AS "category"
      FROM   "Tag"
      JOIN   "TagCategory" ON "TagCategory".id = "Tag"."categoryId"
-     WHERE  "Tag"."name" = $1`, 
+     WHERE  "Tag"."name" = $1`,
     [name]);
+  return res.rows
+}
+
+export async function getImageTags(id: string){
+  const res = await pool.query(`
+    SELECT  "Tag".name, "TagCategory".name AS "category"
+    FROM    "ImageTag"
+    JOIN    "Tag" ON "Tag".id = "ImageTag"."tagId"
+    JOIN    "TagCategory" ON "TagCategory".id = "Tag"."categoryId" 
+    WHERE   "imageId" = $1`,
+    [id]);
   return res.rows
 }
 

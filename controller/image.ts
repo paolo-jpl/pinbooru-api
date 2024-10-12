@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { pool } from "../server";
-import { setInsertColumns, setUpdateColumns } from "../util/query";
+import { setInsertColumns, setOffset, setUpdateColumns } from "../util/query";
 const format = require('pg-format');
 
 export async function getAllImages(columns?: string[] | string, limit: number | string = `ALL`, page: number = 0){
@@ -8,20 +8,36 @@ export async function getAllImages(columns?: string[] | string, limit: number | 
     page = (page - 1) * limit
   else page = 0;
 
-  let sql 
+  let select, sql
   if(columns){
-    sql = format(`
-      SELECT %I FROM "Image"
-      ORDER BY "uploadedAt"
-      LIMIT %s OFFSET %L`, 
-      columns, limit, page);
+    select = format(`SELECT %I`, columns);
   } else {
-    sql = format(`
-      SELECT * FROM "Image"
-      ORDER BY "uploadedAt"
-      LIMIT %s OFFSET %L`, 
-      limit, page);
+    select = format(`SELECT *`);
   }
+
+  sql = format(`
+    %s FROM "Image"
+    ORDER BY "uploadedAt"
+    LIMIT %s OFFSET %L`, 
+    select, limit, page);
+
+  const res = await pool.query(sql);
+  return res.rows
+}
+
+export async function getImagesByTag(tags: string[], limit: number | string = `ALL`, page: number = 0){
+  const offset = setOffset(limit, page)
+
+  const sql = format(`
+    SELECT "Image".*
+    FROM "Image"
+      JOIN "ImageTag" ON "Image".id = "ImageTag"."imageId"
+      JOIN "Tag" ON "Tag".id = "ImageTag"."tagId" 
+    GROUP BY "Image".id
+    HAVING array[%L] <@ ARRAY_AGG("Tag".name)
+    ORDER BY "uploadedAt"
+    LIMIT %s OFFSET %L`, 
+    tags, limit, offset);
 
   const res = await pool.query(sql);
   return res.rows
@@ -33,17 +49,6 @@ export async function getImageById(id: string){
      FROM   "Image"
      JOIN   "User" ON "User".id = "Image"."uploaderId"
      WHERE  "Image".id = $1`, 
-    [id]);
-  return res.rows
-}
-
-export async function getImageTags(id: string){
-  const res = await pool.query(`
-    SELECT  "Tag".name, "TagCategory".name AS "category"
-    FROM    "ImageTag"
-    JOIN    "Tag" ON "Tag".id = "ImageTag"."tagId"
-    JOIN    "TagCategory" ON "TagCategory".id = "Tag"."categoryId" 
-    WHERE   "imageId" = $1`,
     [id]);
   return res.rows
 }
