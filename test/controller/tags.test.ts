@@ -29,6 +29,11 @@ describe('get all tags by id', () => {
       expect(id_array).toEqual([4,5,6]);
     })
   })
+  describe('given category "content"', () => {
+    it('should return tags of category', async () => {
+
+    })
+  })
 });
 
 describe('get tag by name', () => {

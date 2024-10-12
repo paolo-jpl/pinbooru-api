@@ -37,6 +37,14 @@ describe('get image by id', () => {
   })
 })
 
+describe('get images by tags', () => {
+  describe('given tag "original_character"', () => {
+    it('should return images with tag', async () => {
+      const data = await imageController.getImagesByTag(['original_character'])
+    })
+  })
+})
+
 // CREATE
 describe('create image', () => {
   describe('given all image details', () => {
