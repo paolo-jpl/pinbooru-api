@@ -27,8 +27,7 @@ imageRouter.get('/:id', async (req: Request, res: Response) => {
 });
 
 imageRouter.get('/:id/tags', async (req, res) => {
-  const data = await imageController.getImageTags(req.params.id);
-  res.json(data);
+  res.end()
 });
 
 imageRouter.post('/', async (req, res) => {

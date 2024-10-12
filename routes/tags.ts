@@ -17,9 +17,9 @@ tagsRouter.get('/:name', async (req: Request, res: Response) => {
   res.json(data);
 });
 
-//get images given tag
-tagsRouter.get('/:name/images', async (req, res) => {
-  res.end();
+tagsRouter.get('/image/:id', async (req: Request, res: Response) => {
+  const data = await tagController.getImageTags(req.params.id);
+  res.json(data);
 });
 
 
